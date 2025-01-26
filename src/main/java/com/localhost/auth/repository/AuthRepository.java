@@ -6,12 +6,12 @@ package com.localhost.auth.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.localhost.auth.entity.UserEntity;
+import com.localhost.auth.entity.AuthEntity;
 
 /**
  * 
  */
 @Repository
-public interface UserRepository extends CrudRepository<UserEntity, Integer> {
+public interface AuthRepository extends CrudRepository<AuthEntity, Integer> {
 
 }

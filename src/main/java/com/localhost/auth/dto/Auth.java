@@ -5,10 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Registration {
+public class Auth {
 
 	private String userName;
 	private String password;
 	private String accessToken;
 	private String refreshToken;
+	private String device;
 }
