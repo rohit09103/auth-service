@@ -7,26 +7,25 @@ import org.springframework.stereotype.Component;
 
 import com.localhost.auth.dto.User;
 import com.localhost.auth.entity.UserEntity;
+import com.localhost.auth.mapper.UserMapper;
 import com.localhost.auth.repository.UserRepository;
 
 @Component
 public class UserDaoImpl implements UserDao {
 	
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final UserMapper userMapper;
 
 	@Autowired
-	public UserDaoImpl(UserRepository userRepository) {
+	public UserDaoImpl(UserRepository userRepository, 
+			UserMapper userMapper) {
 		this.userRepository = userRepository;
+		this.userMapper = userMapper;
 	}
 
 	@Override
 	public User registerUser(User user) {
-		UserEntity userEntity = new UserEntity();
-		userEntity.setEmail(user.getEmail());
-		userEntity.setPhoneNumber(user.getPhoneNumber());
-		userEntity.setFirstName(user.getFirstName());
-		userEntity.setLastName(user.getLastName());
-		userRepository.save(userEntity);
+		userRepository.save(userMapper.mapTo(user));
 		return user;
 	}
 
