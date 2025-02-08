@@ -8,19 +8,26 @@ import com.localhost.auth.dto.User;
 import com.localhost.auth.dto.request.RegistrationRequestDto;
 import com.localhost.auth.mapper.AuthMapper;
 import com.localhost.auth.mapper.UserMapper;
+import com.localhost.dao.AuthDao;
 import com.localhost.dao.UserDao;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
 	
 	private final UserDao userDao;
+	private final AuthDao authDao;
 	private final UserMapper userMapper;
+	private final AuthMapper authMapper;
 	
 	@Autowired
 	public RegistrationServiceImpl(UserDao userDao, 
-			UserMapper userMapper) {
+			AuthDao authDao,
+			UserMapper userMapper, 
+			AuthMapper authMapper) {
 		this.userDao = userDao;
 		this.userMapper = userMapper;
+		this.authMapper = authMapper;
+		this.authDao = authDao;
 	}
 
 	@Override
@@ -30,8 +37,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public Auth registerDevice(RegistrationRequestDto registrationRequestDto) {
-		// TODO Auto-generated method stub
-		return null;
+		return authDao.registerUser(authMapper.mapTo(registrationRequestDto));
 	}
 
 }

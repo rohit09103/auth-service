@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.localhost.auth.dto.User;
-import com.localhost.auth.entity.UserEntity;
 import com.localhost.auth.mapper.UserMapper;
 import com.localhost.auth.repository.UserRepository;
 
