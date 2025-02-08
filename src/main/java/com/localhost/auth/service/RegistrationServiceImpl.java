@@ -3,13 +3,13 @@ package com.localhost.auth.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.localhost.auth.dao.AuthDao;
+import com.localhost.auth.dao.UserDao;
 import com.localhost.auth.dto.Auth;
 import com.localhost.auth.dto.User;
 import com.localhost.auth.dto.request.RegistrationRequestDto;
 import com.localhost.auth.mapper.AuthMapper;
 import com.localhost.auth.mapper.UserMapper;
-import com.localhost.dao.AuthDao;
-import com.localhost.dao.UserDao;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {

@@ -1,4 +1,4 @@
-package com.localhost.dao;
+package com.localhost.auth.dao;
 
 import java.util.List;
 

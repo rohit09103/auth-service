@@ -1,4 +1,4 @@
-package com.localhost.dao;
+package com.localhost.auth.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
