@@ -33,5 +33,8 @@ public class RegistrationRequestDto implements Serializable{
 	@NotEmpty(message = "Password can not be empty.")
 	@Size(message = "Password should be atleast 12 character long.", min = 12)
 	private String password;
+	@NotEmpty(message = "Device can not be empty.")
+	@Size(message = "DeviceId should be between 36-72 character long.", min = 36, max = 72)
+	private String deviceId;
 
 }

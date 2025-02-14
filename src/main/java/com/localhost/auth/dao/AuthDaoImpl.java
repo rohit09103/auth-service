@@ -28,7 +28,7 @@ public class AuthDaoImpl implements AuthDao {
 	public Auth registerUser(Auth auth) {
 		AuthEntity authEntity = authMapper.mapTo(auth);
 		UserDeviceEntity deviceEntity = new UserDeviceEntity();
-		deviceEntity.setDeviceId(auth.getDevice());
+		deviceEntity.setDeviceId(auth.getDeviceId());
 		deviceEntity.setUserName(auth.getUserName());
 		deviceEntity.setDeviceStatus(DeviceStatus.PENDING);
 		authRepository.save(authEntity);

@@ -1,6 +1,7 @@
 package com.localhost.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.localhost.auth.dao.AuthDao;
@@ -18,16 +19,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private final AuthDao authDao;
 	private final UserMapper userMapper;
 	private final AuthMapper authMapper;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
 	public RegistrationServiceImpl(UserDao userDao, 
 			AuthDao authDao,
 			UserMapper userMapper, 
-			AuthMapper authMapper) {
+			AuthMapper authMapper,
+			BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userDao = userDao;
 		this.userMapper = userMapper;
 		this.authMapper = authMapper;
 		this.authDao = authDao;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
 	@Override
@@ -37,7 +41,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public Auth registerDevice(RegistrationRequestDto registrationRequestDto) {
-		return authDao.registerUser(authMapper.mapTo(registrationRequestDto));
+		Auth auth = authMapper.mapTo(registrationRequestDto);
+		auth.setPassword(bCryptPasswordEncoder.encode(registrationRequestDto.getPassword()));
+		return authDao.registerUser(auth);
 	}
+	
+	private boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
+    }
 
 }

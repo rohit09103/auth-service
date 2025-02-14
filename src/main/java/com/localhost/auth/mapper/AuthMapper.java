@@ -18,7 +18,7 @@ public interface AuthMapper {
 	
 	@Mapping(ignore = true, target = "accessToken")
 	@Mapping(ignore = true, target = "refreshToken")
-	@Mapping(ignore = true, target = "device")
+	@Mapping(ignore = true, target = "deviceId")
 	Auth mapTo(AuthEntity entity);
 	
 	@Mapping(ignore = true, target = "id")
@@ -27,7 +27,7 @@ public interface AuthMapper {
 	
 	@Mapping(ignore = true, target = "accessToken")
 	@Mapping(ignore = true, target = "refreshToken")
-	@Mapping(ignore = true, target = "device")
+	@Mapping(ignore = true, target = "password")
 	Auth mapTo(RegistrationRequestDto registrationRequestDto);
 
 }
