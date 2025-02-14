@@ -11,6 +11,7 @@ import com.localhost.auth.dto.User;
 import com.localhost.auth.dto.request.RegistrationRequestDto;
 import com.localhost.auth.mapper.AuthMapper;
 import com.localhost.auth.mapper.UserMapper;
+import com.localhost.auth.util.JwtUtil;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
@@ -20,18 +21,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private final UserMapper userMapper;
 	private final AuthMapper authMapper;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final JwtUtil jwtUtil;
 	
 	@Autowired
 	public RegistrationServiceImpl(UserDao userDao, 
 			AuthDao authDao,
 			UserMapper userMapper, 
 			AuthMapper authMapper,
-			BCryptPasswordEncoder bCryptPasswordEncoder) {
+			BCryptPasswordEncoder bCryptPasswordEncoder,
+			JwtUtil jwtUtil) {
 		this.userDao = userDao;
 		this.userMapper = userMapper;
 		this.authMapper = authMapper;
 		this.authDao = authDao;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@Override
@@ -43,6 +47,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public Auth registerDevice(RegistrationRequestDto registrationRequestDto) {
 		Auth auth = authMapper.mapTo(registrationRequestDto);
 		auth.setPassword(bCryptPasswordEncoder.encode(registrationRequestDto.getPassword()));
+		authDao.registerUser(auth);
+		auth.setAccessToken(jwtUtil.generateAccessToken(auth.getUserName()));
+		auth.setRefreshToken(jwtUtil.generateRefreshToken(auth.getUserName()));
 		return authDao.registerUser(auth);
 	}
 	
