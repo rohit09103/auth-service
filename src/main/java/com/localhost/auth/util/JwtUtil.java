@@ -16,86 +16,92 @@ import java.util.Map;
 @Slf4j
 public class JwtUtil {
 
-    private String accessTokenSecretKey = null;
-    private String refreshTokenSecretKey = null;
-    private long accessTokenValidityInMilliseconds = 900000; // 15 minutes
-    private long refreshTokenValidityInMilliseconds = 7200000; // 2 hour
+	private String accessTokenSecretKey = null;
+	private String refreshTokenSecretKey = null;
+	private long accessTokenValidityInMilliseconds = 900000; // 15 minutes
+	private long refreshTokenValidityInMilliseconds = 7200000; // 2 hour
 
-    // Generate Access Token
-    public String generateAccessToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username, getAccessTokenSecretKey(), accessTokenValidityInMilliseconds);
-    }
+	// Generate Access Token
+	public String generateAccessToken(String username) {
+		Map<String, Object> claims = new HashMap<>();
+		return generateAccessToken(username, claims);
+	}
 
-    // Generate Refresh Token
-    public String generateRefreshToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username, getRefreshTokenSecretKey(), refreshTokenValidityInMilliseconds);
-    }
+	// Generate Refresh Token
+	public String generateRefreshToken(String username) {
+		Map<String, Object> claims = new HashMap<>();
+		return generateRefreshToken(username, claims);
+	}
 
-    private String createToken(Map<String, Object> claims, String subject, String secret, long validity) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + validity))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
+	// Generate Access Token
+	public String generateAccessToken(String username, Map<String, Object> claims) {
+		return createToken(claims, username, getAccessTokenSecretKey(), accessTokenValidityInMilliseconds);
+	}
 
-    // Validate Access Token
-    public boolean validateAccessToken(String token, String username) {
-        final String extractedUsername = extractUsername(token, getAccessTokenSecretKey());
-        return (extractedUsername.equals(username) && !isTokenExpired(token, getAccessTokenSecretKey()));
-    }
+	// Generate Refresh Token
+	public String generateRefreshToken(String username, Map<String, Object> claims) {
+		return createToken(claims, username, getRefreshTokenSecretKey(), refreshTokenValidityInMilliseconds);
+	}
 
-    // Validate Refresh Token
-    public boolean validateRefreshToken(String token, String username) {
-        final String extractedUsername = extractUsername(token, getRefreshTokenSecretKey());
-        return (extractedUsername.equals(username) && !isTokenExpired(token, getRefreshTokenSecretKey()));
-    }
+	private String createToken(Map<String, Object> claims, String subject, String secret, long validity) {
+		Date current = new Date(System.currentTimeMillis());
+		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(current)
+				.setExpiration(new Date(System.currentTimeMillis() + validity))
+				.signWith(SignatureAlgorithm.HS256, secret).setNotBefore(current).compact();
+	}
 
-    private boolean isTokenExpired(String token, String secret) {
-        return extractExpiration(token, secret).before(new Date());
-    }
+	// Validate Access Token
+	public boolean validateAccessToken(String token, String username) {
+		final String extractedUsername = extractUsername(token, getAccessTokenSecretKey());
+		return (extractedUsername.equals(username) && !isTokenExpired(token, getAccessTokenSecretKey()));
+	}
 
-    private Date extractExpiration(String token, String secret) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();
-    }
+	// Validate Refresh Token
+	public boolean validateRefreshToken(String token, String username) {
+		final String extractedUsername = extractUsername(token, getRefreshTokenSecretKey());
+		return (extractedUsername.equals(username) && !isTokenExpired(token, getRefreshTokenSecretKey()));
+	}
 
-    public String extractUsername(String token, String secret) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-    }
-    
-    private String secureJwtKey() {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] key = new byte[32]; // 256 bits
-        secureRandom.nextBytes(key);
-        return Base64.getEncoder().encodeToString(key);
-    }
-    
-    private String getAccessTokenSecretKey() {
-    	if (null == accessTokenSecretKey || accessTokenSecretKey.isBlank()) {
-    		synchronized (this) {
-    			if (null == accessTokenSecretKey) {
-    				accessTokenSecretKey = secureJwtKey();
-    				log.debug("AccessToken secret key : [{}]", accessTokenSecretKey);
-    			}
+	private boolean isTokenExpired(String token, String secret) {
+		return extractExpiration(token, secret).before(new Date());
+	}
+
+	private Date extractExpiration(String token, String secret) {
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();
+	}
+
+	public String extractUsername(String token, String secret) {
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+	}
+
+	private String secureJwtKey() {
+		SecureRandom secureRandom = new SecureRandom();
+		byte[] key = new byte[32]; // 256 bits
+		secureRandom.nextBytes(key);
+		return Base64.getEncoder().encodeToString(key);
+	}
+
+	private String getAccessTokenSecretKey() {
+		if (null == accessTokenSecretKey || accessTokenSecretKey.isBlank()) {
+			synchronized (this) {
+				if (null == accessTokenSecretKey) {
+					accessTokenSecretKey = secureJwtKey();
+					log.debug("AccessToken secret key : [{}]", accessTokenSecretKey);
+				}
 			}
-    	}
-    	return accessTokenSecretKey;
-    }
-    
-    private String getRefreshTokenSecretKey() {
-    	if (null == refreshTokenSecretKey || refreshTokenSecretKey.isBlank()) {
-    		synchronized (this) {
-    			if (null == refreshTokenSecretKey) {
-    				refreshTokenSecretKey = secureJwtKey();
-    				log.debug("RefreshToken secret key : [{}]", refreshTokenSecretKey);
-    			}
+		}
+		return accessTokenSecretKey;
+	}
+
+	private String getRefreshTokenSecretKey() {
+		if (null == refreshTokenSecretKey || refreshTokenSecretKey.isBlank()) {
+			synchronized (this) {
+				if (null == refreshTokenSecretKey) {
+					refreshTokenSecretKey = secureJwtKey();
+					log.debug("RefreshToken secret key : [{}]", refreshTokenSecretKey);
+				}
 			}
-    	}
-    	return refreshTokenSecretKey;
-    }
+		}
+		return refreshTokenSecretKey;
+	}
 }
-

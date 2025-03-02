@@ -13,5 +13,6 @@ public interface AuthDao {
 	public Auth registerUser(Auth auth);
 	public Auth findAuthWithUserName(String userName);
 	public Auth findAuthWithDevice(String device);
+	public Auth findAuthWithUserId(String userId);
 
 }

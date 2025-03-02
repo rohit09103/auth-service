@@ -12,4 +12,5 @@ public class Auth {
 	private String accessToken;
 	private String refreshToken;
 	private String deviceId;
+	private String userId;
 }

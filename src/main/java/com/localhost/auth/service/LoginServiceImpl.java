@@ -11,52 +11,55 @@ import com.localhost.auth.dao.AuthDao;
 import com.localhost.auth.dao.UserDao;
 import com.localhost.auth.dto.Auth;
 import com.localhost.auth.dto.User;
-import com.localhost.auth.dto.request.RegistrationRequestDto;
-import com.localhost.auth.mapper.AuthMapper;
-import com.localhost.auth.mapper.UserMapper;
+import com.localhost.auth.dto.request.LoginRequestDto;
+import com.localhost.auth.dto.response.LoginResponseDto;
 import com.localhost.auth.util.JwtUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
-public class RegistrationServiceImpl implements RegistrationService {
+@Slf4j
+public class LoginServiceImpl implements LoginService {
 	
 	private final UserDao userDao;
 	private final AuthDao authDao;
-	private final UserMapper userMapper;
-	private final AuthMapper authMapper;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final JwtUtil jwtUtil;
 	
 	@Autowired
-	public RegistrationServiceImpl(UserDao userDao, 
+	public LoginServiceImpl(UserDao userDao, 
 			AuthDao authDao,
-			UserMapper userMapper, 
-			AuthMapper authMapper,
 			BCryptPasswordEncoder bCryptPasswordEncoder,
 			JwtUtil jwtUtil) {
 		this.userDao = userDao;
-		this.userMapper = userMapper;
-		this.authMapper = authMapper;
 		this.authDao = authDao;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		this.jwtUtil = jwtUtil;
 	}
-
+	
 	@Override
-	public User registerUser(RegistrationRequestDto registrationRequestDto) {
-		return userDao.registerUser(userMapper.mapTo(registrationRequestDto));
-	}
-
-	@Override
-	public Auth registerDevice(RegistrationRequestDto registrationRequestDto, String userId) {
-		Auth auth = authMapper.mapTo(registrationRequestDto, userId);
-		auth.setPassword(bCryptPasswordEncoder.encode(registrationRequestDto.getPassword()));
-		auth = authDao.registerUser(auth);
+	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+		Auth auth = authDao.findAuthWithUserName(loginRequestDto.getUserName());
+		//ignore deviceId mismatch
+		if (!verifyPassword(loginRequestDto.getPassword(), auth.getPassword())) {
+			log.error("Incorrect login credentials.");
+			throw new RuntimeException("Bad Login.");
+		}
+		
+		User user = userDao.findUserWithUserId(auth.getUserId());
+		
 		Map<String, Object> claims = new HashMap<String, Object>();
 		claims.put("userId", auth.getUserId());
 		claims.put("deviceId", auth.getDeviceId());
 		auth.setAccessToken(jwtUtil.generateAccessToken(auth.getUserName(), claims));
 		auth.setRefreshToken(jwtUtil.generateRefreshToken(auth.getUserName(), claims));
-		return auth;
+		
+		return new LoginResponseDto(auth, user);
 	}
 	
+	private boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+
 }

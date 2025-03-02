@@ -18,6 +18,7 @@ public class UserEntity {
 	private String lastName;
 	private String phoneNumber;
 	private String email;
+	private String userId;
 	/**
 	 * @return the id
 	 */
@@ -81,9 +82,21 @@ public class UserEntity {
 	
 	
 	
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(email, firstName, lastName, phoneNumber);
+		return Objects.hash(email, firstName, id, lastName, phoneNumber, userId);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -95,12 +108,13 @@ public class UserEntity {
 		}
 		UserEntity other = (UserEntity) obj;
 		return Objects.equals(email, other.email) && Objects.equals(firstName, other.firstName)
-				&& Objects.equals(lastName, other.lastName) && Objects.equals(phoneNumber, other.phoneNumber);
+				&& Objects.equals(id, other.id) && Objects.equals(lastName, other.lastName)
+				&& Objects.equals(phoneNumber, other.phoneNumber) && Objects.equals(userId, other.userId);
 	}
 	@Override
 	public String toString() {
-		return String.format("UserEntity [id=%s, firstName=%s, lastName=%s, phoneNumber=%s, email=%s]", id, firstName,
-				lastName, phoneNumber, email);
+		return String.format("UserEntity [id=%s, firstName=%s, lastName=%s, phoneNumber=%s, email=%s, userId=%s]", id,
+				firstName, lastName, phoneNumber, email, userId);
 	}
 	
 }

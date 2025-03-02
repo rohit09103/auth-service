@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.localhost.auth.dto.Auth;
 import com.localhost.auth.dto.User;
 import com.localhost.auth.dto.request.RegistrationRequestDto;
-import com.localhost.auth.dto.response.RegistrationResponse;
+import com.localhost.auth.dto.response.RegistrationResponseDto;
 import com.localhost.auth.service.RegistrationService;
 
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 		RequestMethod.DELETE, RequestMethod.PATCH,
 		RequestMethod.PUT }, origins = { "http://127.0.0.1:5500" }, allowedHeaders = "*")
 @Slf4j
-public class RegistrationController {
+public class RegistrationController implements AuthController{
 
 	private final RegistrationService registrationService;
 
@@ -31,7 +31,7 @@ public class RegistrationController {
 	}
 
 	@PostMapping("/register")
-	public RegistrationResponse registerCustomer(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
+	public RegistrationResponseDto registerCustomer(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
 		log.info("Recieved request to register. [{}]", registrationRequestDto);
 
 		log.info("Starting user registration.");
@@ -39,9 +39,9 @@ public class RegistrationController {
 		log.info("Completed user registration.");
 
 		log.info("Starting device registration.");
-		Auth auth = registrationService.registerDevice(registrationRequestDto);
+		Auth auth = registrationService.registerDevice(registrationRequestDto, user.getUserId());
 		log.info("Completed device registration.");
 
-		return new RegistrationResponse(auth, user);
+		return new RegistrationResponseDto(auth, user);
 	}
 }

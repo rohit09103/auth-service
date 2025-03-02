@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationResponse {
+public class LoginResponseDto {
 	
 	private Auth auth;
 	private User user;

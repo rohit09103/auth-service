@@ -8,7 +8,7 @@ import com.localhost.auth.dto.User;
 import com.localhost.auth.dto.request.RegistrationRequestDto;
 
 /**
- * 
+ * User and Device Registration service
  */
 public interface RegistrationService {
 	/**
@@ -17,11 +17,11 @@ public interface RegistrationService {
 	 * @return
 	 */
 	public User registerUser(RegistrationRequestDto registrationRequestDto);
+	
 	/**
 	 * To register auth and device into system.
 	 * @param registrationRequestDto
 	 * @return
 	 */
-	public Auth registerDevice(RegistrationRequestDto registrationRequestDto);
-
+	public Auth registerDevice(RegistrationRequestDto registrationRequestDto, String userId);
 }

@@ -26,6 +26,8 @@ public class AuthEntity {
 	private String password;
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "authEntity")
 	private List<UserDeviceEntity> userDeviceEntity;
+	@Column
+	private String userId;
 	
 	/**
 	 * @return the id
@@ -83,9 +85,23 @@ public class AuthEntity {
 		this.userDeviceEntity = userDeviceEntity;
 	}
 
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(password, userDeviceEntity, userName);
+		return Objects.hash(id, password, userDeviceEntity, userId, userName);
 	}
 
 	@Override
@@ -97,14 +113,15 @@ public class AuthEntity {
 			return false;
 		}
 		AuthEntity other = (AuthEntity) obj;
-		return Objects.equals(password, other.password) && Objects.equals(userDeviceEntity, other.userDeviceEntity)
+		return Objects.equals(id, other.id) && Objects.equals(password, other.password)
+				&& Objects.equals(userDeviceEntity, other.userDeviceEntity) && Objects.equals(userId, other.userId)
 				&& Objects.equals(userName, other.userName);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("AuthEntity [userName=%s, password=%s, userDeviceEntity=%s]", userName, password,
-				userDeviceEntity);
+		return String.format("AuthEntity [id=%s, userName=%s, password=%s, userDeviceEntity=%s, userId=%s]", id,
+				userName, password, userDeviceEntity, userId);
 	}
 
 

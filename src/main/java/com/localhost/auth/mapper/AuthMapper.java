@@ -28,6 +28,6 @@ public interface AuthMapper {
 	@Mapping(ignore = true, target = "accessToken")
 	@Mapping(ignore = true, target = "refreshToken")
 	@Mapping(ignore = true, target = "password")
-	Auth mapTo(RegistrationRequestDto registrationRequestDto);
+	Auth mapTo(RegistrationRequestDto registrationRequestDto, String userId);
 
 }
