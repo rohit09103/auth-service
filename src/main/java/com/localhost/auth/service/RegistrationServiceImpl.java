@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private final JwtUtil jwtUtil;
 	
 	@Autowired
-	public RegistrationServiceImpl(UserDao userDao, 
+	public RegistrationServiceImpl(@Qualifier("userGrpcDaoImpl") UserDao userDao,
 			AuthDao authDao,
 			UserMapper userMapper, 
 			AuthMapper authMapper,

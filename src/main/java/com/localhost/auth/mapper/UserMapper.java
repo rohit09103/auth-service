@@ -5,6 +5,8 @@ package com.localhost.auth.mapper;
 
 import java.util.UUID;
 
+import com.localhost.customer.Customer;
+import com.localhost.customer.CustomerCreateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -22,6 +24,8 @@ public interface UserMapper {
 	
 	@Mapping(ignore = true, target = "id")
 	UserEntity mapTo(User user);
+
+	User mapTo(Customer customer);
 	
 	@Mapping(target = "userId", expression = "java( com.localhost.auth.mapper.UserMapper.generateUUID())")
 	User mapTo(RegistrationRequestDto registrationRequestDto);
@@ -29,4 +33,6 @@ public interface UserMapper {
 	public static String generateUUID() {
 		return UUID.randomUUID().toString();
 	}
+
+	CustomerCreateRequest mapToCustomerCreate(User user);
 }

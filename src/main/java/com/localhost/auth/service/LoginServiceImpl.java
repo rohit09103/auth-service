@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
 	private final JwtUtil jwtUtil;
 	
 	@Autowired
-	public LoginServiceImpl(UserDao userDao, 
+	public LoginServiceImpl(@Qualifier("userGrpcDaoImpl") UserDao userDao,
 			AuthDao authDao,
 			BCryptPasswordEncoder bCryptPasswordEncoder,
 			JwtUtil jwtUtil) {
