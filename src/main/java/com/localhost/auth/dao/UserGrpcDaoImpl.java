@@ -4,10 +4,7 @@ import com.localhost.auth.dto.User;
 import com.localhost.auth.entity.UserEntity;
 import com.localhost.auth.mapper.UserMapper;
 import com.localhost.auth.repository.UserRepository;
-import com.localhost.customer.Customer;
-import com.localhost.customer.CustomerClientServiceGrpc;
-import com.localhost.customer.CustomerCreateReply;
-import com.localhost.customer.CustomerFetchReply;
+import com.localhost.customer.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,7 +59,8 @@ public class UserGrpcDaoImpl implements UserDao {
 
 	@Override
 	public User findUserWithUserId(String userId) {
-		CustomerFetchReply customerFetchReply = customerClientServiceBlockingStub.fetchCustomer(null);
+		CustomerFetchRequest customerFetchRequest = CustomerFetchRequest.newBuilder().setUserId(userId).build();
+		CustomerFetchReply customerFetchReply = customerClientServiceBlockingStub.fetchCustomer(customerFetchRequest);
 		verifyOnlyOneUserEntity(userId, customerFetchReply.getCustomersList());
 		return userMapper.mapTo(customerFetchReply.getCustomers(0));
 	}

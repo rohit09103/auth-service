@@ -46,7 +46,7 @@ public class LoginServiceImpl implements LoginService {
 			log.error("Incorrect login credentials.");
 			throw new RuntimeException("Bad Login.");
 		}
-		
+
 		User user = userDao.findUserWithUserId(auth.getUserId());
 		
 		Map<String, Object> claims = new HashMap<String, Object>();

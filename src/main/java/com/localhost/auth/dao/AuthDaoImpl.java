@@ -49,7 +49,9 @@ public class AuthDaoImpl implements AuthDao {
 	public Auth findAuthWithUserName(String userName) {
 		List<AuthEntity> usersByUserName = authRepository.findAllByUserName(userName);
 		verifyOnlyOneAuthEntity(userName, usersByUserName);
-		return authMapper.mapTo(usersByUserName.get(0));
+		Auth auth = authMapper.mapTo(usersByUserName.get(0));
+		auth.setDeviceId(usersByUserName.get(0).getUserDeviceEntity().get(0).getDeviceId());
+		return auth;
 	}
 
 	/**
